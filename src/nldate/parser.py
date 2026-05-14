@@ -194,10 +194,12 @@ def _try_composite(s: str, today: date) -> date | None:
         '1 year and 2 months after yesterday'
         '3 weeks after next monday'
     """
-    # Match an optional second amount/unit: "1 year and 2 months"
+    # Match an optional second amount/unit. The separator between the two
+    # unit phrases can be "and" (e.g. "1 year and 2 months"), a comma
+    # (e.g. "2 years, 3 months"), or both (e.g. "2 years, and 3 months").
     pattern = re.fullmatch(
         rf"(\w+)\s+({_UNIT_PATTERN})"
-        rf"(?:\s+and\s+(\w+)\s+({_UNIT_PATTERN}))?"
+        rf"(?:\s*(?:,|and|,\s*and)\s*(\w+)\s+({_UNIT_PATTERN}))?"
         rf"\s+(before|after|from|prior\s+to)\s+(.+)",
         s,
     )
