@@ -1,0 +1,35 @@
+[project]
+name = "nldate"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "Abhinav Chinnam", email = "abhinav.chinnam09@gmail.com" }
+]
+requires-python = ">=3.11"
+dependencies = [
+    "python-dateutil>=2.9.0.post0",
+]
+
+[build-system]
+requires = ["uv_build>=0.11.11,<0.12.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "mypy>=2.1.0",
+    "pytest>=9.0.3",
+    "ruff>=0.15.12",
+    "types-python-dateutil>=2.9.0.20260508",
+]
+
+[tool.mypy]
+strict = true
+python_version = "3.11"
+files = ["src", "tests"]
+
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "B", "UP"]
