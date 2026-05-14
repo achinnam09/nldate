@@ -123,6 +123,7 @@ def _try_keyword(s: str, today: date) -> date | None:
         return today + relativedelta(days=-2)
     return None
 
+
 def _try_relative_offset(s: str, today: date) -> date | None:
     """Handle 'in N <units>', 'N <units> from now', 'N <units> ago'."""
     # "in N <units>" or "in N <units> from now"
