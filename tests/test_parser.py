@@ -116,6 +116,18 @@ def test_weeks_after_next_monday() -> None:
     # REF Sunday; next Monday = 2025-06-16; + 3 weeks = 2025-07-07.
     assert parse("3 weeks after next Monday", today=REF) == date(2025, 7, 7)
 
+def test_comma_separated_composite() -> None:
+    # Boss's reported failure: comma between unit phrases instead of "and".
+    # Dec 1, 2025 - 2 years 3 months = Sep 1, 2023.
+    assert parse("2 years, 3 months before Dec. 1, 2025", today=REF) == date(2023, 9, 1)
+
+
+def test_day_after_tomorrow() -> None:
+    assert parse("the day after tomorrow", today=REF) == date(2025, 6, 17)
+
+
+def test_day_before_yesterday() -> None:
+    assert parse("the day before yesterday", today=REF) == date(2025, 6, 13)
 
 def test_default_today_is_used() -> None:
     # When `today` is omitted, "today" must equal date.today().

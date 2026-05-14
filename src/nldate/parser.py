@@ -116,8 +116,12 @@ def _try_keyword(s: str, today: date) -> date | None:
         return today + relativedelta(days=1)
     if s == "yesterday":
         return today + relativedelta(days=-1)
+    # English idioms for +/- 2 days.
+    if s in ("the day after tomorrow", "day after tomorrow"):
+        return today + relativedelta(days=2)
+    if s in ("the day before yesterday", "day before yesterday"):
+        return today + relativedelta(days=-2)
     return None
-
 
 def _try_relative_offset(s: str, today: date) -> date | None:
     """Handle 'in N <units>', 'N <units> from now', 'N <units> ago'."""
@@ -206,17 +210,27 @@ def _try_composite(s: str, today: date) -> date | None:
     if not pattern:
         return None
 
-    n1 = _to_int(pattern.group(1))
+    n1_raw = pattern.group(1)
     u1 = pattern.group(2)
     n2_raw = pattern.group(3)
     u2 = pattern.group(4)
     direction = pattern.group(5)
     anchor_str = pattern.group(6)
 
+    try:
+        n1 = _to_int(n1_raw)
+    except ValueError:
+        # The first token wasn't a number or number-word (e.g. "the day after
+        # tomorrow" matches the regex but "the" isn't a count). Bail out so
+        # later handlers or the final ValueError can take over.
+        return None
+
     total = _delta(n1, u1)
     if n2_raw is not None and u2 is not None:
-        total += _delta(_to_int(n2_raw), u2)
-
+        try:
+            total += _delta(_to_int(n2_raw), u2)
+        except ValueError:
+            return None
     # Recurse: the anchor itself is a date expression.
     anchor = parse(_strip_leading_filler(anchor_str), today)
 
